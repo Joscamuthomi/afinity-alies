@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affinity Allies Investment Interest Form</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --gray: #ecf0f1;
+            --dark-gray: #bdc3c7;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .required:after {
+            content: " *";
+            color: var(--error);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--dark-gray);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        input.error, select.error, textarea.error {
+            border-color: var(--error);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .radio-group {
+            margin-top: 10px;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .radio-option {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            min-height: 44px;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        button:disabled {
+            background-color: var(--dark-gray);
+            cursor: not-allowed;
+        }
+        
+        .button-secondary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .price-display {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            background-color: var(--gray);
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+        
+        .navigation-buttons button {
+            flex: 1;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 5px;
+        }
+        
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .step-circle.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .step-circle.completed {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .step-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 20px;
+            height: 2px;
+            background-color: var(--gray);
+            z-index: -1;
+        }
+        
+        .step-circle:last-child::after {
+            display: none;
+        }
+        
+        .step-circle.completed::after {
+            background-color: var(--success);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: var(--gray);
+            margin-bottom: 30px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            width: 25%;
+            transition: width 0.5s ease;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            margin-left: 5px;
+            cursor: help;
+        }
+        
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--text);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            width: 200px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .bank-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--gray);
+            border-radius: 6px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .language-toggle button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        
+        .submit-loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 20px;
+            }
+            
+            .step-circle {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .step-circle::after {
+                width: 10px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="language-toggle">
+            <button id="languageToggle" onclick="toggleLanguage()">Switch to Swahili</button>
+        </div>
+        
+        <h1 id="formTitle">Affinity Allies Investment Interest</h1>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+        </div>
+        
+        <div class="step-indicator">
+            <div class="step-circle active" id="step1Indicator" aria-current="step">1</div>
+            <div class="step-circle" id="step2Indicator">2</div>
+            <div class="step-circle" id="step3Indicator">3</div>
+            <div class="step-circle" id="step4Indicator">4</div>
+        </div>
+        
+        <form id="investmentForm">
+            <!-- Step 1: Personal Information -->
+            <div class="step active" id="step1">
+                <div class="form-section">
+                    <h2 id="step1Title">Step 1: Personal Information</h2>
+                    <p id="step1Desc">Please provide your contact details so we can follow up with you.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName" class="required" id="fullNameLabel">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required aria-required="true">
+                    <div class="error-message" id="fullNameError">Please enter your full name</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="required" id="emailLabel">Email Address</label>
+                    <input type="email" id="email" name="email" required aria-required="true">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" class="required" id="phoneLabel">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" title="10-digit phone number" required aria-required="true">
+                    <div class="error-message" id="phoneError">Please enter a valid 10-digit phone number</div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    <div></div>
+                    <button type="button" id="step1Next" onclick="nextStep(1)">Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Apartment Preferences -->
+            <div class="step" id="step2">
+                <div class="form-section">
+                    <h2 id="step2Title">Step 2: Apartment Preferences</h2>
+                    <p id="step2Desc">Tell us about your preferred apartment specifications.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="unitSize" class="required" id="unitSizeLabel">Preferred Apartment Unit Size</label>
+                    <select id="unitSize" name="unitSize" required aria-required="true">
+                        <option value="">-- Select Size --</option>
+                        <option value="studio">Studio</option>
+                        <option value="one-bedroom">One Bedroom</option>
+                    </select>
+                    <div class="error-message" id="unitSizeError">Please select a unit size</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="floorNumber" class="required" id="floorLabel">Preferred Floor Number 
+                        <span class="tooltip" data-tooltip="Higher floors typically cost 2% more per level"></span>
+                    </label>
+                    <input type="number" id="floorNumber" name="floorNumber" min="1" max="20" required aria-required="true">
+                    <div class="error-message" id="floorError">Please enter a floor between 1 and 20</div>
+                </div>
+                
+                <div class="form-group">
+                    <label id="priceLabel">Purchase Price</label>
+                    <div class="price-display" id="priceDisplay">--</div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    <button type="button" class="button-secondary" onclick="prevStep(2)">← Previous</button>
+                    <button type="button" id="step2Next" onclick="nextStep(2)">Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Financial Information -->
+            <div class="step" id="step3">
+                <div class="form-section">
+                    <h2 id="step3Title">Step 3: Financial Information</h2>
+                    <p id="step3Desc">Let us know about your payment preferences.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="initialDeposit" class="required" id="depositLabel">Estimated Initial Deposit (KES)</label>
+                    <input type="number" id="initialDeposit" name="initialDeposit" min="100000" step="50000" required aria-required="true">
+                    <div class="error-message" id="depositError">Please enter a valid deposit amount (minimum KES 100,000)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="required" id="financingLabel">Financing Preference</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="cash" name="financing" value="cash" required aria-required="true">
+                            <label for="cash" id="cashLabel">Cash Payment</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="financing" name="financing" value="financing">
+                            <label for="financing" id="financingOptionLabel">Financing</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="both" name="financing" value="both">
+                            <label for="both" id="bothLabel">Both Options</label>
+                        </div>
+                    </div>
+                    <div class="error-message" id="financingError">Please select a financing option</div>
+                </div>
+                
+                <div id="bankDetails" class="bank-details hidden">
+                    <h3 id="bankDetailsTitle">Bank Information</h3>
+                    <div class="form-group">
+                        <label for="bankName" id="bankNameLabel">Bank Name</label>
+                        <input type="text" id="bankName" name="bankName">
+                    </div>
+                    <div class="form-group">
+                        <label for="loanAmount" id="loanAmountLabel">Desired Loan Amount (KES)</label>
+                        <input type="number" id="loanAmount" name="loanAmount">
+                    </div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    <button type="button" class="button-secondary" onclick="prevStep(3)">← Previous</button>
+                    <button type="button" id="step3Next" onclick="nextStep(3)">Next →</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Review and Submit -->
+            <div class="step" id="step4">
+                <div class="form-section">
+                    <h2 id="step4Title">Step 4: Review Your Information</h2>
+                    <p id="step4Desc">Please review your details before submitting.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label id="reviewPersonalLabel">Personal Information</label>
+                    <div id="reviewPersonal" class="price-display"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label id="reviewApartmentLabel">Apartment Preferences</label>
+                    <div id="reviewApartment" class="price-display"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label id="reviewFinancialLabel">Financial Information</label>
+                    <div id="reviewFinancial" class="price-display"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="comments" id="commentsLabel">Additional Comments or Questions</label>
+                    <textarea id="comments" name="comments" rows="4"></textarea>
+                </div>
+                
+                <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+                
+                <div class="navigation-buttons">
+                    <button type="button" class="button-secondary" onclick="prevStep(4)">← Previous</button>
+                    <button type="submit" id="submitButton">
+                        <span id="submitText">Submit Application</span>
+                        <span id="submitLoader" class="submit-loader hidden"></span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Current step tracking
+        let currentStep = 1;
+        const totalSteps = 4;
+        let currentLanguage = 'en';
+        
+        // Translations
+        const translations = {
+            en: {
+                formTitle: "Affinity Allies Investment Interest",
+                step1Title: "Step 1: Personal Information",
+                step1Desc: "Please provide your contact details so we can follow up with you.",
+                fullNameLabel: "Full Name",
+                emailLabel: "Email Address",
+                phoneLabel: "Phone Number",
+                step2Title: "Step 2: Apartment Preferences",
+                step2Desc: "Tell us about your preferred apartment specifications.",
+                unitSizeLabel: "Preferred Apartment Unit Size",
+                floorLabel: "Preferred Floor Number",
+                priceLabel: "Purchase Price",
+                step3Title: "Step 3: Financial Information",
+                step3Desc: "Let us know about your payment preferences.",
+                depositLabel: "Estimated Initial Deposit (KES)",
+                financingLabel: "Financing Preference",
+                cashLabel: "Cash Payment",
+                financingOptionLabel: "Financing",
+                bothLabel: "Both Options",
+                bankDetailsTitle: "Bank Information",
+                bankNameLabel: "Bank Name",
+                loanAmountLabel: "Desired Loan Amount (KES)",
+                step4Title: "Step 4: Review Your Information",
+                step4Desc: "Please review your details before submitting.",
+                reviewPersonalLabel: "Personal Information",
+                reviewApartmentLabel: "Apartment Preferences",
+                reviewFinancialLabel: "Financial Information",
+                commentsLabel: "Additional Comments or Questions",
+                submitText: "Submit Application",
+                languageToggle: "Switch to Swahili"
+            },
+            sw: {
+                formTitle: "Rahisia ya Uwekezaji wa Affinity Allies",
+                step1Title: "Hatua ya 1: Taarifa za Kibinafsi",
+                step1Desc: "Tafadhali toa maelezo yako ya mawasiliano ili tuweze kukuona.",
+                fullNameLabel: "Jina Kamili",
+                emailLabel: "Anwani ya Barua Pepe",
+                phoneLabel: "Nambari ya Simu",
+                step2Title: "Hatua ya 2: Mapendezi ya Ghorofa",
+                step2Desc: "Tuambie kuhusu vipimo vya ghorofa unayopendelea.",
+                unitSizeLabel: "Ukubwa wa Ghorofa Unayopendelea",
+                floorLabel: "Nambari ya Sakafu Unayopendelea",
+                priceLabel: "Bei ya Ununuzi",
+                step3Title: "Hatua ya 3: Taarifa za Kifedha",
+                step3Desc: "Tutajulishe kuhusu mapendezi yako ya malipo.",
+                depositLabel: "Amana ya Awali (KES)",
+                financingLabel: "Mapendezi ya Ufadhili",
+                cashLabel: "Malipo ya Fedha Taslimu",
+                financingOptionLabel: "Mkopo",
+                bothLabel: "Chaguzi Zote",
+                bankDetailsTitle: "Taarifa za Benki",
+                bankNameLabel: "Jina la Benki",
+                loanAmountLabel: "Kiasi cha Mkopo Unachotaka (KES)",
+                step4Title: "Hatua ya 4: Hakiki Taarifa Zako",
+                step4Desc: "Tafadhali hakiki maelezo yako kabla ya kuwasilisha.",
+                reviewPersonalLabel: "Taarifa za Kibinafsi",
+                reviewApartmentLabel: "Mapendezi ya Ghorofa",
+                reviewFinancialLabel: "Taarifa za Kifedha",
+                commentsLabel: "Maoni au Maswali ya Ziada",
+                submitText: "Wasilisha Maombi",
+                languageToggle: "Switch to English"
+            }
+        };
+        
+        // Load saved data if available
+        function loadSavedData() {
+            const savedData = localStorage.getItem('affinityAlliesFormData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'radio') {
+                            if (element.value === data[key]) {
+                                element.checked = true;
+                                if (key === 'financing' && (data[key] === 'financing' || data[key] === 'both')) {
+                                    document.getElementById('bankDetails').classList.remove('hidden');
+                                }
+                            }
+                        } else {
+                            element.value = data[key];
+                        }
+                    }
+                });
+                calculatePrice();
+            }
+        }
+        
+        // Save form data
+        function saveFormData() {
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                unitSize: document.getElementById('unitSize').value,
+                floorNumber: document.getElementById('floorNumber').value,
+                initialDeposit: document.getElementById('initialDeposit').value,
+                financing: document.querySelector('input[name="financing"]:checked')?.value,
+                bankName: document.getElementById('bankName')?.value,
+                loanAmount: document.getElementById('loanAmount')?.value,
+                comments: document.getElementById('comments').value
+            };
+            localStorage.setItem('affinityAlliesFormData', JSON.stringify(formData));
+        }
+        
+        // Toggle language
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'sw' : 'en';
+            updateLanguage();
+        }
+        
+        // Update all text elements with translations
+        function updateLanguage() {
+            Object.keys(translations[currentLanguage]).forEach(key => {
+                const elements = document.querySelectorAll(`[id="${key}"]`);
+                elements.forEach(element => {
+                    if (element.tagName === 'INPUT' && element.type !== 'submit') {
+                        element.placeholder = translations[currentLanguage][key];
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                });
+            });
+            document.getElementById('languageToggle').textContent = translations[currentLanguage].languageToggle;
+        }
+        
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            setupEventListeners();
+            updateProgressBar();
+            
+            // Auto-save on input changes
+            document.querySelectorAll('input, select, textarea').forEach(element => {
+                element.addEventListener('input', debounce(saveFormData, 500));
+            });
+        });
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Price calculation
+            document.getElementById('unitSize').addEventListener('change', debounce(calculatePrice, 300));
+            document.getElementById('floorNumber').addEventListener('input', debounce(calculatePrice, 300));
+            
+            // Real-time validation
+            document.getElementById('email').addEventListener('blur', validateEmail);
+            document.getElementById('phone').addEventListener('blur', validatePhone);
+            document.getElementById('initialDeposit').addEventListener('blur', validateDeposit);
+            
+            // Conditional bank details
+            document.querySelectorAll('input[name="financing"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const bankDetails = document.getElementById('bankDetails');
+                    if (this.value === 'financing' || this.value === 'both') {
+                        bankDetails.classList.remove('hidden');
+                        setTimeout(() => {
+                            bankDetails.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                    } else {
+                        bankDetails.classList.add('hidden');
+                    }
+                    document.getElementById('financingError').style.display = 'none';
+                });
+            });
+            
+            // Form submission
+            document.getElementById('investmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitForm();
+            });
+        }
+        
+        // Step navigation functions
+        function nextStep(current) {
+            if (validateStep(current)) {
+                document.getElementById(`step${current}`).classList.remove('active');
+                document.getElementById(`step${current + 1}`).classList.add('active');
+                document.getElementById(`step${current}Indicator`).classList.remove('active');
+                document.getElementById(`step${current}Indicator`).classList.add('completed');
+                document.getElementById(`step${current + 1}Indicator`).classList.add('active');
+                
+                currentStep = current + 1;
+                updateProgressBar();
+                
+                if (currentStep === totalSteps) {
+                    updateReviewSection();
+                }
+                
+                // Scroll to top of form
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function prevStep(current) {
+            document.getElementById(`step${current}`).classList.remove('active');
+            document.getElementById(`step${current - 1}`).classList.add('active');
+            document.getElementById(`step${current}Indicator`).classList.remove('active');
+            document.getElementById(`step${current - 1}Indicator`).classList.add('active');
+            document.getElementById(`step${current - 1}Indicator`).classList.remove('completed');
+            
+            currentStep = current - 1;
+            updateProgressBar();
+            
+            // Scroll to top of form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function updateProgressBar() {
+            const progressPercentage = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+        }
+        
+        // Field validation functions
+        function validateEmail() {
+            const email = document.getElementById('email');
+            const error = document.getElementById('emailError');
+            if (!email.value.includes('@') || !email.value.includes('.')) {
+                email.classList.add('error');
+                error.style.display = 'block';
+                return false;
+            } else {
+                email.classList.remove('error');
+                error.style.display = 'none';
+                return true;
+            }
+        }
+        
+        function validatePhone() {
+            const phone = document.getElementById('phone');
+            const error = document.getElementById('phoneError');
+            if (!phone.value.match(/^\d{10}$/)) {
+                phone.classList.add('error');
+                error.style.display = 'block';
+                return false;
+            } else {
+                phone.classList.remove('error');
+                error.style.display = 'none';
+                return true;
+            }
+        }
+        
+        function validateDeposit() {
+            const deposit = document.getElementById('initialDeposit');
+            const error = document.getElementById('depositError');
+            if (!deposit.value || parseInt(deposit.value) < 100000) {
+                deposit.classList.add('error');
+                error.style.display = 'block';
+                return false;
+            } else {
+                deposit.classList.remove('error');
+                error.style.display = 'none';
+                return true;
+            }
+        }
+        
+        // Step validation
+        function validateStep(step) {
+            let isValid = true;
+            
+            if (step === 1) {
+                if (!document.getElementById('fullName').value) {
+                    document.getElementById('fullName').classList.add('error');
+                    document.getElementById('fullNameError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                if (!validateEmail()) isValid = false;
+                if (!validatePhone()) isValid = false;
+            } else if (step === 2) {
+                if (!document.getElementById('unitSize').value) {
+                    document.getElementById('unitSize').classList.add('error');
+                    document.getElementById('unitSizeError').style.display = 'block';
+                    isValid = false;
+                }
+                
+                const floorNumber = parseInt(document.getElementById('floorNumber').value);
+                if (isNaN(floorNumber) || floorNumber < 1 || floorNumber > 20) {
+                    document.getElementById('floorNumber').classList.add('error');
+                    document.getElementById('floorError').style.display = 'block';
+                    isValid = false;
+                }
+            } else if (step === 3) {
+                if (!validateDeposit()) isValid = false;
+                
+                if (!document.querySelector('input[name="financing"]:checked')) {
+                    document.getElementById('financingError').style.display = 'block';
+                    isValid = false;
+                }
+            }
+            
+            if (!isValid) {
+                // Scroll to first error
+                const firstError = document.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            return isValid;
+        }
+        
+        // Update review section
+        function updateReviewSection() {
+            // Personal Information
+            document.getElementById('reviewPersonal').innerHTML = `
+                <p><strong>${currentLanguage === 'en' ? 'Name:' : 'Jina:'}</strong> ${document.getElementById('fullName').value}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Email:' : 'Barua Pepe:'}</strong> ${document.getElementById('email').value}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Phone:' : 'Simu:'}</strong> ${document.getElementById('phone').value}</p>
+            `;
+            
+            // Apartment Preferences
+            document.getElementById('reviewApartment').innerHTML = `
+                <p><strong>${currentLanguage === 'en' ? 'Unit Size:' : 'Ukubwa:'}</strong> ${document.getElementById('unitSize').options[document.getElementById('unitSize').selectedIndex].text}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Floor Number:' : 'Sakafu:'}</strong> ${document.getElementById('floorNumber').value}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Purchase Price:' : 'Bei:'}</strong> ${document.getElementById('priceDisplay').textContent}</p>
+            `;
+            
+            // Financial Information
+            const financingValue = document.querySelector('input[name="financing"]:checked').value;
+            let financingText = '';
+            if (financingValue === 'cash') {
+                financingText = currentLanguage === 'en' ? 'Cash Payment' : 'Fedha Taslimu';
+            } else if (financingValue === 'financing') {
+                financingText = currentLanguage === 'en' ? 'Financing' : 'Mkopo';
+            } else if (financingValue === 'both') {
+                financingText = currentLanguage === 'en' ? 'Both Options' : 'Chaguzi Zote';
+            }
+            
+            let bankDetailsHtml = '';
+            if (financingValue === 'financing' || financingValue === 'both') {
+                bankDetailsHtml = `
+                    <p><strong>${currentLanguage === 'en' ? 'Bank Name:' : 'Benki:'}</strong> ${document.getElementById('bankName').value || 'Not specified'}</p>
+                    <p><strong>${currentLanguage === 'en' ? 'Loan Amount:' : 'Kiasi cha Mkopo:'}</strong> ${document.getElementById('loanAmount').value ? 'KES ' + parseInt(document.getElementById('loanAmount').value).toLocaleString() : 'Not specified'}</p>
+                `;
+            }
+            
+            document.getElementById('reviewFinancial').innerHTML = `
+                <p><strong>${currentLanguage === 'en' ? 'Initial Deposit:' : 'Amana ya Awali:'}</strong> KES ${parseInt(document.getElementById('initialDeposit').value).toLocaleString()}</p>
+                <p><strong>${currentLanguage === 'en' ? 'Financing Preference:' : 'Ufadhili:'}</strong> ${financingText}</p>
+                ${bankDetailsHtml}
+            `;
+        }
+        
+        // Price calculation
+        function calculatePrice() {
+            const unitSize = document.getElementById('unitSize').value;
+            const floorNumber = parseInt(document.getElementById('floorNumber').value) || 0;
+            
+            if (!unitSize || floorNumber < 1) {
+                document.getElementById('priceDisplay').textContent = '--';
+                return;
+            }
+            
+            // Base prices (replace with actual figures from costing schedule)
+            let basePrice = 0;
+            if (unitSize === 'studio') {
+                basePrice = 5000000; // 5 million KES
+            } else if (unitSize === 'one-bedroom') {
+                basePrice = 7500000; // 7.5 million KES
+            }
+            
+            // Price increases by 2% per floor
+            const floorPremium = basePrice * 0.02 * (floorNumber - 1);
+            const totalPrice = basePrice + floorPremium;
+            
+            document.getElementById('priceDisplay').textContent = 'KES ' + totalPrice.toLocaleString();
+        }
+        
+        // Form submission
+        function submitForm() {
+            if (!validateStep(4)) return;
+            
+            const submitButton = document.getElementById('submitButton');
+            const submitText = document.getElementById('submitText');
+            const submitLoader = document.getElementById('submitLoader');
+            
+            // Show loading state
+            submitButton.disabled = true;
+            submitText.textContent = currentLanguage === 'en' ? 'Submitting...' : 'Inawasilisha...';
+            submitLoader.classList.remove('hidden');
+            
+            // Simulate API call (replace with actual fetch)
+            setTimeout(() => {
+                // In a real implementation, you would send the data to your server
+                const formData = new FormData(document.getElementById('investmentForm'));
+                const data = Object.fromEntries(formData.entries());
+                
+                console.log('Form data:', data); // For demonstration
+                
+                // Show success message
+                alert(currentLanguage === 'en' 
+                    ? 'Thank you for your interest in Affinity Allies! A representative will contact you shortly.' 
+                    : 'Asante kwa kupendezwa na Affinity Allies! Mwakilishi wetu atawasiliana nawe hivi karibuni.');
+                
+                // Reset form
+                submitButton.disabled = false;
+                submitText.textContent = translations[currentLanguage].submitText;
+                submitLoader.classList.add('hidden');
+                
+                // Clear saved data
+                localStorage.removeItem('affinityAlliesFormData');
+                
+                // Optionally redirect to thank you page
+                // window.location.href = '/thank-you';
+            }, 2000);
+        }
+        
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+    </script>
+</body>
+</html>
