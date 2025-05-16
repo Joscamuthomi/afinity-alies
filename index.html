@@ -857,29 +857,32 @@
         }
         
         // Price calculation
-        function calculatePrice() {
-            const unitSize = document.getElementById('unitSize').value;
-            const floorNumber = parseInt(document.getElementById('floorNumber').value) || 0;
-            
-            if (!unitSize || floorNumber < 1) {
-                document.getElementById('priceDisplay').textContent = '--';
-                return;
-            }
-            
-            // Base prices (replace with actual figures from costing schedule)
-            let basePrice = 0;
-            if (unitSize === 'studio') {
-                basePrice = 5000000; // 5 million KES
-            } else if (unitSize === 'one-bedroom') {
-                basePrice = 7500000; // 7.5 million KES
-            }
-            
-            // Price increases by 2% per floor
-            const floorPremium = basePrice * 0.02 * (floorNumber - 1);
-            const totalPrice = basePrice + floorPremium;
-            
-            document.getElementById('priceDisplay').textContent = 'KES ' + totalPrice.toLocaleString();
+          // Price calculation
+        <!-- Replace the existing calculatePrice() function with this updated version: -->
+    // Price calculation based on selections
+    function calculatePrice() {
+        const unitSize = document.getElementById('unitSize').value;
+        const floorNumber = parseInt(document.getElementById('floorNumber').value) || 0;
+        
+        if (!unitSize || floorNumber < 1) {
+            document.getElementById('priceDisplay').textContent = '--';
+            return;
         }
+        
+        // Updated base prices according to requirements
+        let basePrice = 0;
+        if (unitSize === 'studio') {
+            basePrice = 2500000; // 2.5 million KES for studio
+        } else if (unitSize === 'one-bedroom') {
+            basePrice = 1500000; // 1.5 million KES for one-bedroom
+        }
+        
+        // Price increases by 50,000 KES per floor
+        const floorPremium = 50000 * (floorNumber - 1);
+        const totalPrice = basePrice + floorPremium;
+        
+        document.getElementById('priceDisplay').textContent = 'KES ' + totalPrice.toLocaleString();
+    }
         
         // Form submission
         function submitForm() {
